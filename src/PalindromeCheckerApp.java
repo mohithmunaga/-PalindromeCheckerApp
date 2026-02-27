@@ -1,15 +1,30 @@
-
+import java.util.Scanner;
 public class PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
-        System.out.println("=======================================");
-        System.out.println("   Welcome to Palindrome Checker App  ");
-        System.out.println("=======================================");
-        System.out.println("Application Name : Palindrome Checker");
-        System.out.println("Version          : 1.0");
-        System.out.println("---------------------------------------");
-        System.out.println("Application started successfully.");
-        System.out.println("---------------------------------------");
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a string: ");
+        String word = scanner.nextLine();
+
+        boolean isPalindrome = true;
+
+        int start = 0;
+        int end = word.length() - 1;
+
+        while (start < end) {
+            if (word.charAt(start) != word.charAt(end)) {
+                isPalindrome = false;
+                break;
+            }
+            start++;
+            end--;
+        }
+
+        System.out.println("Input : " + word);
+        System.out.println("Is Palindrome? : " + isPalindrome);
+
+        scanner.close();
     }
 }
