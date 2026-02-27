@@ -1,102 +1,63 @@
-import java.util.Scanner;
 import java.util.Stack;
 
-public class PalindromeStrategyApp {
+public class PalindromeCheckerApp {
 
-    interface PalindromeStrategy {
-        boolean isPalindrome(String input);
+    public static boolean twoPointer(String input) {
+        int start = 0;
+        int end = input.length() - 1;
+
+        while (start < end) {
+            if (input.charAt(start) != input.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
     }
 
-    static class TwoPointerStrategy implements PalindromeStrategy {
-        public boolean isPalindrome(String input) {
-            int start = 0;
-            int end = input.length() - 1;
-
-            while (start < end) {
-                if (input.charAt(start) != input.charAt(end)) {
-                    return false;
-                }
-                start++;
-                end--;
-            }
-            return true;
+    public static boolean reverseString(String input) {
+        String reversed = "";
+        for (int i = input.length() - 1; i >= 0; i--) {
+            reversed += input.charAt(i);
         }
+        return input.equals(reversed);
     }
 
-    static class ReverseStringStrategy implements PalindromeStrategy {
-        public boolean isPalindrome(String input) {
-            String reversed = "";
-            for (int i = input.length() - 1; i >= 0; i--) {
-                reversed += input.charAt(i);
+    public static boolean stackMethod(String input) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char c : input.toCharArray()) {
+            stack.push(c);
+        }
+
+        for (char c : input.toCharArray()) {
+            if (c != stack.pop()) {
+                return false;
             }
-            return input.equals(reversed);
         }
-    }
-
-    static class StackStrategy implements PalindromeStrategy {
-        public boolean isPalindrome(String input) {
-            Stack<Character> stack = new Stack<>();
-            for (char c : input.toCharArray()) {
-                stack.push(c);
-            }
-
-            for (char c : input.toCharArray()) {
-                if (c != stack.pop()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    static class PalindromeContext {
-        private PalindromeStrategy strategy;
-
-        public void setStrategy(PalindromeStrategy strategy) {
-            this.strategy = strategy;
-        }
-
-        public boolean check(String input) {
-            return strategy.isPalindrome(input);
-        }
+        return true;
     }
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        PalindromeContext context = new PalindromeContext();
+        String input = "racecar";
 
-        System.out.print("Enter a string: ");
-        String input = scanner.nextLine();
+        long startTime, endTime;
 
-        System.out.println("Choose Strategy:");
-        System.out.println("1. Two Pointer");
-        System.out.println("2. Reverse String");
-        System.out.println("3. Stack Based");
-        System.out.print("Enter choice: ");
+        startTime = System.nanoTime();
+        twoPointer(input);
+        endTime = System.nanoTime();
+        System.out.println("Two Pointer Time: " + (endTime - startTime) + " ns");
 
-        int choice = scanner.nextInt();
+        startTime = System.nanoTime();
+        reverseString(input);
+        endTime = System.nanoTime();
+        System.out.println("Reverse String Time: " + (endTime - startTime) + " ns");
 
-        switch (choice) {
-            case 1:
-                context.setStrategy(new TwoPointerStrategy());
-                break;
-            case 2:
-                context.setStrategy(new ReverseStringStrategy());
-                break;
-            case 3:
-                context.setStrategy(new StackStrategy());
-                break;
-            default:
-                System.out.println("Invalid choice. Using default Two Pointer.");
-                context.setStrategy(new TwoPointerStrategy());
-        }
-
-        boolean result = context.check(input);
-
-        System.out.println("Input : " + input);
-        System.out.println("Is Palindrome? : " + result);
-
-        scanner.close();
+        startTime = System.nanoTime();
+        stackMethod(input);
+        endTime = System.nanoTime();
+        System.out.println("Stack Method Time: " + (endTime - startTime) + " ns");
     }
 }
