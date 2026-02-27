@@ -6,23 +6,17 @@ public class PalindromeCheckerApp {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter a string: ");
-        String word = scanner.nextLine();
+        String original = scanner.nextLine();
 
-        boolean isPalindrome = true;
+        String reversed = "";
 
-        int start = 0;
-        int end = word.length() - 1;
-
-        while (start < end) {
-            if (word.charAt(start) != word.charAt(end)) {
-                isPalindrome = false;
-                break;
-            }
-            start++;
-            end--;
+        for (int i = original.length() - 1; i >= 0; i--) {
+            reversed = reversed + original.charAt(i);
         }
 
-        System.out.println("Input : " + word);
+        boolean isPalindrome = original.equals(reversed);
+
+        System.out.println("Input : " + original);
         System.out.println("Is Palindrome? : " + isPalindrome);
 
         scanner.close();
