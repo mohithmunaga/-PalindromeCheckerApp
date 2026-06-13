@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id String @id @default(cuid())
+  username String @unique
+  password String
+  role String @default("EMPLOYEE")
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  logs ActivityLog[]
+}
+model Customer {
+  id String @id @default(cuid())
+  name String
+  mobile String
+  alternateMobile String?
+  place String
+  address String
+  gstNumber String?
+  notes String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  invoices Invoice[]
+  payments Payment[]
+}
+model Brand {
+  id String @id @default(cuid())
+  name String @unique
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  inventory Inventory[]
+}
+model Product {
+  id String @id @default(cuid())
+  name String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  inventory Inventory[]
+}
+model Inventory {
+  id String @id @default(cuid())
+  productId String
+  brandId String
+  quantity Float @default(0)
+  unit String
+  purchasePrice Float
+  sellingPrice Float
+  lastUpdated DateTime @default(now())
+  product Product @relation(fields: [productId], references: [id])
+  brand Brand @relation(fields: [brandId], references: [id])
+  @@unique([productId, brandId])
+}
+model Invoice {
+  id String @id @default(cuid())
+  invoiceNumber String @unique
+  date DateTime @default(now())
+  customerId String
+  customer Customer @relation(fields: [customerId], references: [id])
+  transportCharges Float @default(0)
+  otherCharges Float @default(0)
+  totalAmount Float
+  paidAmount Float @default(0)
+  balanceAmount Float
+  status String @default("UNPAID")
+  items InvoiceItem[]
+  payments Payment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model InvoiceItem {
+  id String @id @default(cuid())
+  invoiceId String
+  productName String
+  brandName String
+  quantity Float
+  rate Float
+  total Float
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+}
+model Payment {
+  id String @id @default(cuid())
+  invoiceId String?
+  customerId String
+  amount Float
+  date DateTime @default(now())
+  method String @default("CASH")
+  notes String?
+  customer Customer @relation(fields: [customerId], references: [id])
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+}
+model ActivityLog {
+  id String @id @default(cuid())
+  userId String
+  action String
+  details String?
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+}
+model Delivery {
+  id String @id @default(cuid())
+  invoiceId String @unique
+  deliveryNumber String @unique
+  date DateTime @default(now())
+  vehicleNumber String?
+  driverName String?
+  status String @default("PENDING")
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+}
